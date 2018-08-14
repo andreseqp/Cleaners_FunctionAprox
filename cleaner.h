@@ -116,7 +116,7 @@ private:
 
 agent::agent() {
 	// basic constructor
-	numEst = 23;
+	numEst = 44;
 	client noClient = client();
 	for (int i = 0; i < numEst; i++) { featWeights[i] = 0; }
 	alpha = 0.01, gamma = 0.5, tau = 10, neta = 0;																
@@ -132,7 +132,7 @@ agent::agent() {
 
 agent::agent(double alphaI, double gammaI, double tauI, double netaI) {
 	// parameterized constructor
-	numEst = 23;
+	numEst = 44;
 	client noClient = client();
 	for (int i = 0; i < numEst; i++) { featWeights[i] = 0; }
 	//values[4] = 10, values[2] = 10;
