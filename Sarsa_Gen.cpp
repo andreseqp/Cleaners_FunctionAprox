@@ -220,42 +220,41 @@ void initializeIndFile(ofstream &indOutput, agent &learner,
 
 int _tmain(int argc, _TCHAR* argv[]) {
 
-	ifstream input(argv[1]);
-	//ifstream input("d:\\quinonesa\\learning_models_c++\\functionaprox\\test.json");
-	//ifstream input("d:\\quinonesa\\simulation\\functionaprox\\out_0\\parameters.json");
-	if (input.fail()) { cout << "json file failed" << endl; }
-	json param = nlohmann::json::parse(input);
+	//ifstream input(argv[1]);
+	////ifstream input("d:\\quinonesa\\learning_models_c++\\functionaprox\\test.json");
+	////ifstream input("d:\\quinonesa\\simulation\\functionaprox\\out_0\\parameters.json");
+	//if (input.fail()) { cout << "json file failed" << endl; }
+	//json param = nlohmann::json::parse(input);
 
-	//json param;
-
-	//param["totRounds"] = 60000;
-	//param["ResReward"] = 10;
-	//param["VisReward"] = 10;
-	//param["ResProb"] = 0.2;
-	//param["VisProb"] = 0.2;
-	//param["ResProbLeav"] = 0;
-	//param["VisProbLeav"] = 1;
-	//param["negativeRew"] = -10;
-	//param["experiment"] = false;
-	//param["inbr"] = 0;
-	//param["outbr"] = 0;
-	//param["trainingRep"] = 30;
-	//param["alphaT"] = 1e-005;
-	//param["printGen"] = 1;
-	//param["seed"] = 1;
-	//param["gammaRange"] = { 0, 0.8 };
-	//param["tauRange"] = { 5, 10 },
-	//	param["netaRange"] = { 0, 0.5 };
-	//param["mins"] = { 10, 10 };
-	//param["folder"] = "S:/quinonesa/Simulations/functionAprox/General/mHeightC30_/";
-	//param["visitors"]["Sp1"]["means"] = { 30, 20, 40, 40, 40, 40, 40, 40 };
-	//param["visitors"]["Sp1"]["sds"] = { 3, 3, 3, 3, 3, 3, 3, 3 };
-	//param["visitors"]["Sp1"]["probs"] = { 1, 1, 1 };
-	//param["visitors"]["Sp1"]["relAbun"] = 1;
-	//param["residents"]["Sp1"]["means"] = { 20, 30, 40, 40, 40, 40, 40, 40 };
-	//param["residents"]["Sp1"]["sds"] = { 3, 3, 3, 3, 3, 3, 3, 3 };
-	//param["residents"]["Sp1"]["probs"] = { 0, 1, 1 };
-	//param["residents"]["Sp1"]["relAbun"] = 1;
+	json param;
+	param["totRounds"] = 10;
+	param["ResReward"] = 10;
+	param["VisReward"] = 10;
+	param["ResProb"] = 0.2;
+	param["VisProb"] = 0.2;
+	param["ResProbLeav"] = 0;
+	param["VisProbLeav"] = 1;
+	param["negativeRew"] = -10;
+	param["experiment"] = false;
+	param["inbr"] = 0;
+	param["outbr"] = 0;
+	param["trainingRep"] = 30;
+	param["alphaT"] = 1e-005;
+	param["printGen"] = 1;
+	param["seed"] = 1;
+	param["gammaRange"] = { 0, 0.8 };
+	param["tauRange"] = { 5, 10 },
+		param["netaRange"] = { 0, 0.5 };
+	param["mins"] = { 10, 10 };
+	param["folder"] = "S:/quinonesa/Simulations/functionAprox/General/mHeightC30_/";
+	param["visitors"]["Sp1"]["means"] = { 30, 20, 40, 40, 40, 40, 40, 40 };
+	param["visitors"]["Sp1"]["sds"] = { 3, 3, 3, 3, 3, 3, 3, 3 };
+	param["visitors"]["Sp1"]["probs"] = { 1, 1, 1 };
+	param["visitors"]["Sp1"]["relAbun"] = 1;
+	param["residents"]["Sp1"]["means"] = { 20, 30, 40, 40, 40, 40, 40, 40 };
+	param["residents"]["Sp1"]["sds"] = { 3, 3, 3, 3, 3, 3, 3, 3 };
+	param["residents"]["Sp1"]["probs"] = { 0, 1, 1 };
+	param["residents"]["Sp1"]["relAbun"] = 1;
 	
 	const int numlearn = 2;
 	
