@@ -111,7 +111,7 @@ file2timeInter<-function(filename,interV,maxAge=-2)
     tmp[fullRVoptions==TRUE,as.list(
       unlist(lapply(
         .SD,function(x) list(mean = mean(x),sd = sd(x))))),
-      by=.(Interv=floor(Age/interV),Training,Alpha,Gamma,Tau,Neta,Outbr),
+      by=.(Interv=floor(Age/interV),Training,Alpha,Gamma,Tau,Neta),
                     .SDcols=c("Type_choice",
                               grep("[[:digit:]]",names(tmp),value=TRUE))]
   if(length(extPar)>0){

@@ -84,12 +84,12 @@ void draw(client trainingSet[], json param,
 	double rndNum;
 	json::iterator itSpsVis = param["visitors"].begin();
 	json::iterator itSpsRes = param["residents"].begin();
-	for (int i = 0; i < param["totRounds"] * 2; i++) {
+	for (int i = 0; i < param["totRounds"].get<int>() * 2; i++) {
 		rndNum = rnd::uniform();
 		if (rndNum < cumProbs[0]) {
 			string chosenSp = "Sp";
 			chosenSp.append(itos(residSpProb.sample() + 1));
-			trainingSet[i] = client(resident,param["residents"][chosenSp]["means"],
+			trainingSet[i] = client(resident, param["residents"][chosenSp]["means"],
 				param["residents"][chosenSp]["sds"],
 				mins, param["residents"][chosenSp]["probs"],
 				param["ResReward"].get<double>(),chosenSp);
@@ -120,9 +120,9 @@ string create_filename(std::string filename, agent &individual,
 	filename.append("_neta");
 	filename.append(douts(individual.getLearnPar(netaPar)));
 	filename.append("_outb");
-	filename.append(douts(param["outbr"]));
+	filename.append(douts(param["outbr"].get<double>()));
 	filename.append("_seed");
-	filename.append(itos(param["seed"]));
+	filename.append(itos(param["seed"].get<int>()));
 	filename.append(".txt");
 	return(filename);
 }
@@ -163,16 +163,18 @@ void initializeIndFile(ofstream &indOutput, agent &learner,
 	else {
 		indOutput << "Training" << '\t' << "Age" << '\t' << "Alpha" << '\t';
 		indOutput << "Gamma" << '\t' << "Tau" << '\t' << "Neta" << '\t';
-		indOutput << "Outbr" << '\t' << "Current.Reward" << '\t';
+		indOutput <<  "Current.Reward" << '\t';
 		indOutput << "Cum.Reward" << '\t' << "Neg.Reward" << '\t';
 		indOutput << "value_choice" << '\t' << "Type_choice" << '\t';
+		indOutput << "Species" << '\t';
 		indOutput << "Height_choice" << '\t' << "Length_choice" << '\t';
 		indOutput << "redMain_choice" << '\t' << "greenMain_choice" << '\t';
 		indOutput << "blueMain_choice" << '\t' << "redSec_choice" << '\t';
 		indOutput << "greenSec_choice" << '\t' << "blueSec_choice" << '\t';
 		indOutput << "secCol_choice" << '\t' << "strip_choice" << '\t';
 		indOutput << "dots_choice" << '\t' << "value_discard" << '\t';
-		indOutput << "Type_discard" << '\t' << "Height_discard" << '\t';
+		indOutput << "Type_discard" << '\t';
+		indOutput << "Species" << '\t' << "Height_discard" << '\t';
 		indOutput << "Length_discard" << '\t' << "redMain_discard" << '\t';
 		indOutput << "greenMain_discard" << '\t' << "blueMain_discard" << '\t';
 		indOutput << "redSec_discard" << '\t' << "greenSec_discard" << '\t';
@@ -220,13 +222,13 @@ void initializeIndFile(ofstream &indOutput, agent &learner,
 
 int _tmain(int argc, _TCHAR* argv[]) {
 
-	//ifstream input(argv[1]);
-	////ifstream input("d:\\quinonesa\\learning_models_c++\\functionaprox\\test.json");
-	////ifstream input("d:\\quinonesa\\simulation\\functionaprox\\out_0\\parameters.json");
-	//if (input.fail()) { cout << "json file failed" << endl; }
-	//json param = nlohmann::json::parse(input);
+	ifstream input(argv[1]);
+	//ifstream input("d:\\quinonesa\\learning_models_c++\\functionaprox\\test.json");
+	//ifstream input("d:\\quinonesa\\simulation\\functionaprox\\out_0\\parameters.json");
+	if (input.fail()) { cout << "json file failed" << endl; }
+	json param = nlohmann::json::parse(input);
 
-	json param;
+	/*json param;
 	param["totRounds"] = 10;
 	param["ResReward"] = 10;
 	param["VisReward"] = 10;
@@ -244,7 +246,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	param["seed"] = 1;
 	param["gammaRange"] = { 0, 0.8 };
 	param["tauRange"] = { 5, 10 },
-		param["netaRange"] = { 0, 0.5 };
+	param["netaRange"] = { 0, 0.5 };
 	param["mins"] = { 10, 10 };
 	param["folder"] = "S:/quinonesa/Simulations/functionAprox/General/mHeightC30_/";
 	param["visitors"]["Sp1"]["means"] = { 30, 20, 40, 40, 40, 40, 40, 40 };
@@ -254,57 +256,12 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	param["residents"]["Sp1"]["means"] = { 20, 30, 40, 40, 40, 40, 40, 40 };
 	param["residents"]["Sp1"]["sds"] = { 3, 3, 3, 3, 3, 3, 3, 3 };
 	param["residents"]["Sp1"]["probs"] = { 0, 1, 1 };
-	param["residents"]["Sp1"]["relAbun"] = 1;
+	param["residents"]["Sp1"]["relAbun"] = 1;*/
 	
 	const int numlearn = 2;
 	
 	mins[0] = param["mins"][0], mins[1] = param["mins"][1];
-	 /*
-	for (size_t i = 0; i < 8; i++)
-	{
-		visitMeans[i] = 40;
-		visitSds[i] = 3;
-		residMeans[i] = 40;
-		residSds[i] = 3;
-		if (i < 3){
-			visitProbs[i] = 1;
-			residProbs[i] = 1;
-		}
-	}
-	visitMeans[0] = 30, residMeans[0] = 20;
-	visitMeans[1] = 20, residMeans[1] = 30;
-	residProbs[0] = 0;
-	mins[0] = 10, mins[1] = 10;
-	int totRounds = 100000;
-	ResReward = 10;
-	VisReward = 10;
-	double ResProb = 0.2;
-	double VisProb = 0.2;
-	double ResProbLeav = 0;
-	double VisProbLeav = 1;
-	double negativeRew = -10;
-	bool experiment = 0;
-	double inbr = 0.0;
-	double outbr = 0;
-	int const trainingRep = 15;//30
-	double alphaT = 0.000001;
-	const int numlearn = 2;
-	int printGen = 10;
 
-	double gammaT;
-
-	double gammaRange[3] = { 0, 0.5, 0.8 };
-
-	double tauT;
-
-	double tauRange[3] = { 1, 2, 5};
-	
-	double netaT = 0;
-
-	double netaRange[1] = { 0.5 };
-
-
-	int seed = 12;*/
 
 	rnd::set_seed(param["seed"].get<int>());
 	rnd::discrete_distribution residSpProbs = clientProbs(param, "residents");
@@ -336,7 +293,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
 						draw(clientSet, param, visitSpProbs,residSpProbs);
 						idClientSet = 0;
 						for (int j = 0; j < param["totRounds"].get<int>(); j++) {
-							cout << "Round= " << j << endl;
 							learners[k]->act(clientSet, idClientSet, param,
 								visitSpProbs, residSpProbs);
 							learners[k]->updateDerived();

@@ -76,7 +76,7 @@ public:
 	// virtual functions
 	virtual double value() = 0;
 	// Calculates the value estimation for the current option/options
-	virtual void choice(int &StaAct1, int &StaAct2) = 0;
+	virtual void choice() = 0;
 	virtual void updateDerived() = 0;
 	int numEst;							
 	// Number of estimates characterizing bhavioural options
@@ -116,7 +116,7 @@ private:
 
 agent::agent() {
 	// basic constructor
-	numEst = 44;
+	numEst = 23;
 	client noClient = client();
 	for (int i = 0; i < numEst; i++) { featWeights[i] = 0; }
 	alpha = 0.01, gamma = 0.5, tau = 10, neta = 0;																
@@ -190,20 +190,20 @@ void agent::getNewOptions(client newOptions[], int &idNewOptions,
 		// Define the behaviour of the unattended client
 		if (cleanOptionsT[1].mytype == resident)
 		{
-			if (rnd::uniform() > param["ResProbLeav"]) { 
+			if (rnd::uniform() > param["ResProbLeav"].get<double>()) { 
 				// if the unttended client is a resident, 
 				// it leaves with probability ResPropLeave
 				cleanOptionsT1[0] = cleanOptionsT[1], negReward = 0; 
 			}									
-			else { negReward = param["negativeRew"]; }
+			else { negReward = param["negativeRew"].get<double>(); }
 		}
 		else if (cleanOptionsT[1].mytype == visitor) {
-			if (rnd::uniform() > param["VisProbLeav"]) { 
+			if (rnd::uniform() > param["VisProbLeav"].get<double>()) {
 				// if the unttended client is a visitor, 
 				// it leaves with probability VisPropLeave
 				cleanOptionsT1[0] = cleanOptionsT[1], negReward = 0; 
 			}								
-			else { negReward = param["negativeRew"]; }
+			else { negReward = param["negativeRew"].get<double>(); }
 		}
 		else { negReward = 0; }
 	}
@@ -211,21 +211,21 @@ void agent::getNewOptions(client newOptions[], int &idNewOptions,
 	{
 		if (cleanOptionsT[0].mytype == resident)
 		{
-			if (rnd::uniform() > param["ResProbLeav"]) {
+			if (rnd::uniform() > param["ResProbLeav"].get<double>()) {
 				// if the unattended client is a resident, 
 				// it leaves with probability ResPropLeave
 				cleanOptionsT1[0] = cleanOptionsT[0], negReward = 0; 
 			}		
-			else { negReward = param["negativeRew"]; }
+			else { negReward = param["negativeRew"].get<double>(); }
 		}
 		else if (cleanOptionsT[0].mytype == visitor)
 		{
-			if (rnd::uniform() > param["VisProbLeav"]) {
+			if (rnd::uniform() > param["VisProbLeav"].get<double>()) {
 				// if the unattended client is a visitor, 
 				// it leaves with probability VisPropLeave
 				cleanOptionsT1[0] = cleanOptionsT[0], negReward = 0; 
 			}		
-			else { negReward = param["negativeRew"]; }
+			else { negReward = param["negativeRew"].get<double>(); }
 		}
 		else { negReward = 0; }
 	}
@@ -277,7 +277,7 @@ void agent::getExternalOptions(client newOptions[], int &idNewOptions,
 					param["residents"][chosenSp]["means"],
 					param["residents"][chosenSp]["sds"],
 					mins, param["residents"][chosenSp]["probs"],
-					param["ResReward"],chosenSp); 	
+					param["ResReward"].get<double>(),chosenSp);
 			}
 			else {
 				std::string chosenSp = "Sp";
@@ -286,7 +286,7 @@ void agent::getExternalOptions(client newOptions[], int &idNewOptions,
 					param["visitors"][chosenSp]["means"],
 					param["visitors"][chosenSp]["sds"],
 					mins, param["visitors"][chosenSp]["probs"],
-					param["VisReward"],chosenSp);
+					param["VisReward"].get<double>(),chosenSp);
 			}				
 		}
 		else {
@@ -298,7 +298,7 @@ void agent::getExternalOptions(client newOptions[], int &idNewOptions,
 					param["visitors"][chosenSp]["means"],
 					param["visitors"][chosenSp]["sds"], mins, 
 					param["visitors"][chosenSp]["probs"],
-					param["VisReward"],chosenSp);
+					param["VisReward"].get<double>(),chosenSp);
 			}
 			else { 
 				std::string chosenSp = "Sp";
@@ -307,7 +307,7 @@ void agent::getExternalOptions(client newOptions[], int &idNewOptions,
 					param["residents"][chosenSp]["means"], 
 					param["residents"][chosenSp]["sds"],
 					mins, param["residents"][chosenSp]["probs"],
-					param["ResReward"], chosenSp); }
+					param["ResReward"].get<double>(), chosenSp); }
 		}
 	}
 }
@@ -326,14 +326,14 @@ void agent::getExperimentalOptions(nlohmann::json param,
 			param["residents"][chosenSp]["means"],
 			param["residents"][chosenSp]["sds"],mins,
 			param["residents"][chosenSp]["probs"],
-			param["ResReward"],chosenSp);
+			param["ResReward"].get<double>(),chosenSp);
 		chosenSp = "Sp";
 		chosenSp.append(itos(visitSpProb.sample()+1));
 		cleanOptionsT1[1].rebirth(visitor, 
 			param["visitors"][chosenSp]["means"],
 			param["visitors"][chosenSp]["sds"],	mins,
 			param["visitors"][chosenSp]["probs"],
-			param["VisReward"],chosenSp);
+			param["VisReward"].get<double>(),chosenSp);
 		return;
 	}
 }
@@ -343,7 +343,6 @@ void agent::act(client newOptions[], int &idNewOptions,
 	rnd::discrete_distribution visitSpProb,	
 	rnd::discrete_distribution residSpProb) {
 	// taking action, obatining reward, seeing new state, choosing future action
-	int StaAct1, StaAct2;
 	++age;
 	// new time step
 	cleanOptionsT[0] = cleanOptionsT1[0], cleanOptionsT[1] = cleanOptionsT1[1];
@@ -368,7 +367,7 @@ void agent::act(client newOptions[], int &idNewOptions,
 	// Look into the value of state action pair if option 1 is chosen
 	valuesT1[1] = value();
 	//StaAct2 = mapOptions(cleanOptionsT1, choiceT1);
-	choice(StaAct1, StaAct2);
+	choice();
 }
 /*void agent::update(double &reward)																				// change estimated value according to current reward and estimates of future state-action pair
 {
@@ -628,7 +627,7 @@ public:
 		:agent(alphaI, gammaI, tauI, netaI)	{
 			numEst = 44;
 		}
-	virtual void choice(int &StaAct1, int &StaAct2) {
+	virtual void choice() {
 		double tautemp = getLearnPar(tauPar);
 		if (rnd::uniform() < softMax(valuesT1[0],valuesT1[1]))
 		{ choiceT1= 0; }
@@ -666,7 +665,7 @@ public:
 		:agent(alphaI, gammaI, tauI,netaI) {
 		numEst = 44;
 	}
-	virtual void choice(int &StaAct1, int &StaAct2)	{
+	virtual void choice()	{
 		if (cleanOptionsT1[0].mytype != absence && 
 			cleanOptionsT1[1].mytype != absence) {
 			// if there are no absences, then use desicion rule
@@ -714,7 +713,7 @@ public:
 		:agent(alphaI, gammaI, tauI, netaI)	{
 		numEst = 11;
 	}
-	virtual void choice(int &StaAct1, int &StaAct2)	{
+	virtual void choice()	{
 		if (rnd::uniform() < softMax(valuesT1[0], valuesT1[1]))	{
 			choiceT1 = 0;
 		}
@@ -737,7 +736,7 @@ public:
 		:agent(alphaI, gammaI, tauI,netaI) {
 		numEst = 11;
 	}
-	virtual void choice(int &StaAct1, int &StaAct2)	{
+	virtual void choice()	{
 		if (cleanOptionsT1[0].mytype != absence && 
 			cleanOptionsT1[1].mytype != absence) {
 			// if there are no absences, then use desicion rule
